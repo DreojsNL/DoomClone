@@ -10,13 +10,16 @@ public class Player : MonoBehaviour
     private float pitch = 0f;
     public int maxHealth = 100;
     public int currentHealth;
+    public bool isMoving;
+    private Rigidbody rb;
 
-
-  
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         currentHealth = maxHealth;
+
+        // Get the Rigidbody component
+        rb = GetComponent<Rigidbody>();
     }
 
     void Update()
@@ -28,22 +31,26 @@ public class Player : MonoBehaviour
         // Sprinting check
         float currentSpeed = Input.GetKey(KeyCode.LeftShift) ? sprintSpeed : speed;
 
-        Vector3 movement = new Vector3(horizontal, 0, vertical) * currentSpeed * Time.deltaTime;
-        transform.Translate(movement);
+        // Calculate movement direction
+        Vector3 movement = (transform.forward * vertical + transform.right * horizontal).normalized * currentSpeed;
+
+        // Apply force to the Rigidbody
+        rb.AddForce(movement);
+        isMoving = movement.magnitude > 0.1f;
 
         // Player rotation
-        float mouseX = Input.GetAxis("Mouse X");
-        float mouseY = Input.GetAxis("Mouse Y");
+        float mouseX = Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * rotationSpeed * Time.deltaTime;
 
         // Rotate the player around the Y-axis (yaw)
-        Vector3 rotation = new Vector3(0, mouseX, 0) * rotationSpeed * Time.deltaTime;
-        transform.Rotate(rotation);
+        transform.Rotate(Vector3.up * mouseX);
 
         // Rotate the camera around the X-axis (pitch)
-        pitch -= mouseY * rotationSpeed * Time.deltaTime;
+        pitch -= mouseY;
         pitch = Mathf.Clamp(pitch, -maxLookUp, maxLookDown);
         Camera.main.transform.localRotation = Quaternion.Euler(pitch, 0, 0);
     }
+
     public void TakeDamage(int damageAmount)
     {
         currentHealth -= damageAmount;

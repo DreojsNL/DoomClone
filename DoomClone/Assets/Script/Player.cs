@@ -8,10 +8,15 @@ public class Player : MonoBehaviour
     public float maxLookUp = 80f; // Maximum angle to look up
     public float maxLookDown = 80f; // Maximum angle to look down
     private float pitch = 0f;
-    
+    public int maxHealth = 100;
+    public int currentHealth;
+
+
+  
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        currentHealth = maxHealth;
     }
 
     void Update()
@@ -38,5 +43,21 @@ public class Player : MonoBehaviour
         pitch -= mouseY * rotationSpeed * Time.deltaTime;
         pitch = Mathf.Clamp(pitch, -maxLookUp, maxLookDown);
         Camera.main.transform.localRotation = Quaternion.Euler(pitch, 0, 0);
+    }
+    public void TakeDamage(int damageAmount)
+    {
+        currentHealth -= damageAmount;
+        Debug.Log("Player took " + damageAmount + " damage. Current health: " + currentHealth);
+
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        Debug.Log("Player died!");
+        // You can add your own logic here for player death, such as game over or respawn.
     }
 }

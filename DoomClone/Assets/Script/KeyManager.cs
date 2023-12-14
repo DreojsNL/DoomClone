@@ -1,29 +1,65 @@
 using System;
-using System.Security.Cryptography;
+using System.Collections.Generic;
 
 public class KeyManager
 {
-    // Genereer een willekeurige sleutel met de opgegeven lengte (in bytes)
-    public static string GenerateRandomKey(int keyLength)
+    private Dictionary<string, bool> acquiredKeys;
+
+    public KeyManager()
     {
-        using (var rng = new RNGCryptoServiceProvider())
+        acquiredKeys = new Dictionary<string, bool>();
+    }
+
+    // Voeg een sleutel toe aan de verzameling
+    public void AddKey(string keyName)
+    {
+        if (!acquiredKeys.ContainsKey(keyName))
         {
-            byte[] keyBytes = new byte[keyLength];
-            rng.GetBytes(keyBytes);
-            return BitConverter.ToString(keyBytes).Replace("-", "").ToLower();
+            acquiredKeys[keyName] = false;
+            Console.WriteLine($"Je hebt de {keyName} gevonden!");
+        }
+        else
+        {
+            Console.WriteLine($"Je hebt al de {keyName}.");
         }
     }
 
-    // Voeg hier meer functies toe voor ander sleutelbeheer, zoals opslaan, laden, vernieuwen, etc.
+    // Controleer of de speler de vereiste sleutel heeft om een deur te openen
+    public bool HasKey(string keyName)
+    {
+        return acquiredKeys.ContainsKey(keyName) && acquiredKeys[keyName];
+    }
+
+    // Markeer een sleutel als verkregen
+    public void AcquireKey(string keyName)
+    {
+        if (acquiredKeys.ContainsKey(keyName))
+        {
+            acquiredKeys[keyName] = true;
+            Console.WriteLine($"Je hebt de {keyName} gebruikt om een deur te openen.");
+        }
+    }
 }
 
 class Program
 {
     static void Main()
     {
-        // Voorbeeld: Genereer een willekeurige sleutel van 16 bytes (128 bits)
-        string randomKey = KeyManager.GenerateRandomKey(16);
+        KeyManager keyManager = new KeyManager();
 
-        Console.WriteLine("Willekeurige sleutel: " + randomKey);
+        // Simuleer het vinden en gebruiken van sleutels
+        keyManager.AddKey("Rode sleutel");
+        keyManager.AddKey("Blauwe sleutel");
+        keyManager.AcquireKey("Rode sleutel");
+
+        // Controleer of de speler de vereiste sleutel heeft om een deur te openen
+        if (keyManager.HasKey("Rode sleutel"))
+        {
+            Console.WriteLine("De deur met de rode sleutel is geopend!");
+        }
+        else
+        {
+            Console.WriteLine("Je hebt de juiste sleutel niet.");
+        }
     }
 }

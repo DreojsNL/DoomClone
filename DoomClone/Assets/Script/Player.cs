@@ -12,8 +12,12 @@ public class Player : MonoBehaviour
     public int maxHealth = 100;
     public int currentHealth;
     public bool isMoving;
+    public GameObject[] pickUpSounds;
     private Rigidbody rb;
     public TextMeshProUGUI healthText; // Reference to the TextMeshPro component for displaying health
+    public Gun shotGun;
+  
+
 
     private void Start()
     {
@@ -61,15 +65,17 @@ public class Player : MonoBehaviour
         currentHealth -= damageAmount;
         UpdateHealthText(); // Update the health text when the player takes damage
 
-        Debug.Log("Player took " + damageAmount + " damage. Current health: " + currentHealth);
-
         if (currentHealth <= 0)
         {
             Die();
         }
     }
+    public void AddHealth(int healthAmount)
+    {
+        currentHealth += healthAmount; 
+    }
 
-    private void Die()
+        private void Die()
     {
         Debug.Log("Player died!");
         // You can add your own logic here for player death, such as game over or respawn.
@@ -84,6 +90,52 @@ public class Player : MonoBehaviour
             healthText.text = string.Format("{0:000}", currentHealth);
             // Alternatively, you can use string interpolation:
             // healthText.text = $"Health: {currentHealth:000}";
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("HealthPack") && currentHealth >= 80 && currentHealth < 100)
+        {
+            Instantiate(pickUpSounds[0], transform.position, Quaternion.identity);
+            Destroy(other.gameObject);
+            currentHealth = 100;
+        }
+        else if(other.gameObject.CompareTag("HealthPack") && currentHealth < 100)
+        {
+            Instantiate(pickUpSounds[0], transform.position, Quaternion.identity);
+            Destroy(other.gameObject);
+            AddHealth(20);
+        }
+        if (other.gameObject.CompareTag("HealthKit") && currentHealth >= 90 && currentHealth < 100)
+        {
+            Instantiate(pickUpSounds[0], transform.position, Quaternion.identity);
+            Destroy(other.gameObject);
+            currentHealth = 100;
+        }
+        else if (other.gameObject.CompareTag("HealthKit")&& currentHealth < 100)
+        {
+
+            Instantiate(pickUpSounds[0], transform.position, Quaternion.identity);
+            Destroy(other.gameObject);
+            AddHealth(10);
+        }
+        if (other.gameObject.CompareTag("ArmourPack"))
+        {
+            Instantiate(pickUpSounds[1], transform.position, Quaternion.identity);
+            Destroy(other.gameObject);
+            AddHealth(20);
+        }
+        if (other.gameObject.CompareTag("ArmourHelmet"))
+        {
+            Instantiate(pickUpSounds[1], transform.position, Quaternion.identity);
+            Destroy(other.gameObject);
+            AddHealth(10);
+        }
+        if (other.gameObject.CompareTag("SGAmmo"))
+        {
+            Instantiate(pickUpSounds[2], transform.position, Quaternion.identity);
+            Destroy(other.gameObject);
+            shotGun.AddAmmo(10);
         }
     }
 }

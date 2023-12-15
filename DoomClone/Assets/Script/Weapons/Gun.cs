@@ -137,7 +137,7 @@ public class Gun : MonoBehaviour
 
     public void AddAmmo(int ammoAmount)
     {
-        currentAmmo = Mathf.Min(currentAmmo + ammoAmount, maxAmmo);
+        currentAmmo += ammoAmount;
         UpdateAmmoText(); // Update the ammo text after adding ammo
     }
 

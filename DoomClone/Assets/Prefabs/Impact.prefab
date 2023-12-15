@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 7904287491572713500}
   - component: {fileID: 2691478016131187670}
   - component: {fileID: 20364249264713872}
-  - component: {fileID: 3945920612305180574}
   - component: {fileID: 4221060910380929466}
   m_Layer: 0
   m_Name: Impact
@@ -85,28 +84,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &3945920612305180574
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7899378483675173122}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!114 &4221060910380929466
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,7 +114,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3692874944989595822}
-  - component: {fileID: 1505617755624241800}
+  - component: {fileID: 4629930745902287576}
   m_Layer: 0
   m_Name: Impact
   m_TagString: Untagged
@@ -161,7 +138,7 @@ Transform:
   - {fileID: 7904287491572713500}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1505617755624241800
+--- !u!114 &4629930745902287576
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -170,6 +147,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 8832070595227782518}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58f0183f0e784744fbe26ebc3f0d6643, type: 3}
+  m_Script: {fileID: 11500000, guid: ba0f09855308ef6468be08fbe534ddd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

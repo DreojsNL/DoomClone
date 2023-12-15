@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Turret : MonoBehaviour
+public class Turrett : MonoBehaviour
 {
     public GameObject projectilePrefab;
     public float shootInterval = 0.1f;

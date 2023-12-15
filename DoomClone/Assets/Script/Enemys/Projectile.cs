@@ -36,11 +36,11 @@ public class Projectile : MonoBehaviour
             }
         }
 
-            homingTime -= Time.deltaTime;
-            if (homingTime <= 0)
-            {
-                isHoming = false;
-            }
+        homingTime -= Time.deltaTime;
+        if (homingTime <= 0)
+        {
+            isHoming = false;
+        }
         else
         {
             if (target != null && Vector3.Distance(transform.position, target.position) <= homingDistance)

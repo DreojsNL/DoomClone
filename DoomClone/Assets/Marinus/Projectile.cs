@@ -6,10 +6,11 @@ public class Projectile : MonoBehaviour
     private int damage;
     private float speed;
     private Rigidbody rb;
-    private float homingTime = 1.0f;
+    private float homingTime = 0.2f;
     private Transform target;
     private bool isHoming = false;
-    private float homingDistance = 5.0f; // Adjust this value as needed
+    public float homingDistance = 30.0f; // Adjust this value as needed
+    Vector3 randomBullet;
 
     private void Awake()
     {
@@ -20,7 +21,8 @@ public class Projectile : MonoBehaviour
     private void Start()
     {
         target = GameObject.FindGameObjectWithTag("Player")?.transform;
-        rb.AddRelativeForce(Vector3.forward * speed * speed * speed * speed * speed * speed * Time.deltaTime);
+        randomBullet = new Vector3(Random.Range(-1f, 2f), Random.Range(-1f, 2f), Random.Range(-1f, 2f));
+        randomBullet = target.position + randomBullet;
     }
 
     private void Update()
@@ -29,16 +31,16 @@ public class Projectile : MonoBehaviour
         {
             if (target != null)
             {
-                Vector3 direction = target.position - transform.position;
+                Vector3 direction = randomBullet - transform.position;
                 rb.velocity = direction.normalized * speed;
             }
+        }
 
             homingTime -= Time.deltaTime;
             if (homingTime <= 0)
             {
                 isHoming = false;
             }
-        }
         else
         {
             if (target != null && Vector3.Distance(transform.position, target.position) <= homingDistance)

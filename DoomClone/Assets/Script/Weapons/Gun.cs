@@ -17,6 +17,7 @@ public class Gun : MonoBehaviour
     private bool canShoot = true;
     private bool isShooting = false; // Added variable
     public AudioSource audioSource;
+    private bool isMoving;
     private Camera playerCamera;
     public Player playerScript;
 

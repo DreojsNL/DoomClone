@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 public class Player : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class Player : MonoBehaviour
     public int currentHealth;
     public bool isMoving;
     private Rigidbody rb;
+    public TextMeshProUGUI healthText; // Reference to the TextMeshPro component for displaying health
 
     private void Start()
     {
@@ -22,8 +24,9 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-    void Update()
+    void FixedUpdate()
     {
+        UpdateHealthText();
         // Player movement
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
@@ -37,8 +40,10 @@ public class Player : MonoBehaviour
         // Apply force to the Rigidbody
         rb.AddForce(movement);
         isMoving = movement.magnitude > 0.1f;
+    }
 
-        // Player rotation
+    private void LateUpdate()
+    {
         float mouseX = Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * rotationSpeed * Time.deltaTime;
 
@@ -54,6 +59,8 @@ public class Player : MonoBehaviour
     public void TakeDamage(int damageAmount)
     {
         currentHealth -= damageAmount;
+        UpdateHealthText(); // Update the health text when the player takes damage
+
         Debug.Log("Player took " + damageAmount + " damage. Current health: " + currentHealth);
 
         if (currentHealth <= 0)
@@ -66,5 +73,17 @@ public class Player : MonoBehaviour
     {
         Debug.Log("Player died!");
         // You can add your own logic here for player death, such as game over or respawn.
+    }
+
+    // Update the TextMeshPro component with the current health value
+    void UpdateHealthText()
+    {
+        if (healthText != null)
+        {
+            // Format the health value with leading zeros
+            healthText.text = string.Format("{0:000}", currentHealth);
+            // Alternatively, you can use string interpolation:
+            // healthText.text = $"Health: {currentHealth:000}";
+        }
     }
 }

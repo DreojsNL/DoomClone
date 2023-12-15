@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,16 +24,31 @@ public class Gun : MonoBehaviour
     private int currentSpriteIndex = 0;
     public float scrollSpeed = 0.1f; // Adjust the scrolling speed here
 
+    public int maxAmmo = 50;
+    public int currentAmmo;
+    public TextMeshProUGUI ammoText; // Reference to the UI text for displaying ammo count
+
     void Start()
     {
         playerCamera = Camera.main;
+        currentAmmo = maxAmmo;
+        UpdateAmmoText(); // Update the ammo text initially
     }
 
     void Update()
     {
         if (Input.GetButtonDown("Fire1") && canShoot)
         {
-            StartCoroutine(Shoot());
+            if (currentAmmo > 0) // Check if there is ammo before shooting
+            {
+                StartCoroutine(Shoot());
+                currentAmmo--;
+                UpdateAmmoText(); // Update the ammo text after shooting
+            }
+            else
+            {
+                // Play an empty ammo sound or provide feedback for no ammo
+            }
         }
 
         // Check if the player is moving and play the SGSway animation accordingly
@@ -118,4 +134,20 @@ public class Gun : MonoBehaviour
         gunImage.sprite = gunSprites[0];
         currentSpriteIndex = 0;
     }
+
+    public void AddAmmo(int ammoAmount)
+    {
+        currentAmmo = Mathf.Min(currentAmmo + ammoAmount, maxAmmo);
+        UpdateAmmoText(); // Update the ammo text after adding ammo
+    }
+
+    void UpdateAmmoText()
+    {
+        if (ammoText != null)
+        {
+            // Use a custom format string to display the ammo count with leading zeros
+            ammoText.text = $"{currentAmmo:D3}";
+        }
+    }
+
 }

@@ -9,6 +9,7 @@ public class Gun : MonoBehaviour
     public float spreadAngle = 20f;
     public float fireRate = 1f;
     public float shotRange = 10f;
+    public int pelletDamage = 10;
     public float moveSpeed = 5f; // Adjust the movement speed here
     public Image gunImage;
     public Sprite[] gunSprites;
@@ -61,8 +62,6 @@ public class Gun : MonoBehaviour
             imageAnimation.SetBool("IsMoving", false);
         }
 
-        // Set the isShooting parameter in the animation controller
-        imageAnimation.SetBool("IsShooting", isShooting);
     }
 
     public void ScrollImages()
@@ -93,7 +92,7 @@ public class Gun : MonoBehaviour
         imageAnimation.Play("SGRecoil");
         Invoke("ResetImage", 0.4f);
 
-        for (int i = 0; i < pellets; i++)
+        for (int i = 0; i < pellets; ++i)
         {
             float currentSpread = Random.Range(-spreadAngle / 2, spreadAngle / 2);
             float verticalSpread = Random.Range(-spreadAngle / 2, spreadAngle / 2);
@@ -105,7 +104,17 @@ public class Gun : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(playerCamera.transform.position, direction, out hit, shotRange))
             {
-                Debug.Log("Hit: " + hit.collider.gameObject.name);
+                if(hit.collider.gameObject.GetComponent<Health>()  != null)
+                {
+                    hit.collider.GetComponent<Health>().TakeDamage(pelletDamage);
+                    Debug.Log("Hit enemy");
+                }
+                else
+                {
+                    Debug.Log("Hit wall");
+                }
+                
+
                 Debug.DrawLine(playerCamera.transform.position, hit.point, Color.red, 0.1f);
 
                 // Offset the instantiation position to prevent z-fighting

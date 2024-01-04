@@ -8,23 +8,32 @@ public class HitScanAI : MonoBehaviour
     public float moveSpeed = 5f;
     public int damage = 15;
     public float shootingRange = 10f;
-    public float detectionRange = 15f; // Detection range for the player
-    public float shootCooldown = 1.5f; // Cooldown in seconds
-    private float wanderTimerBetweenShots = 1.5f; // Time for wandering between shots
-    private float lateralMovementRange = 2f; // Range for lateral movement after each shot
-    public float turnSpeed = 5f; // Turn speed in degrees per second
-    public float wanderRadius = 5f; // Radius for wandering
+    public float detectionRange = 15f;
+    public float shootCooldown = 1.5f;
+    private float wanderTimerBetweenShots = 1.5f;
+    private float lateralMovementRange = 2f;
+    public float turnSpeed = 5f;
+    public float wanderRadius = 5f;
     private NavMeshAgent navMeshAgent;
     public float shootingAngle;
     public bool isShooting = false;
     private bool detected = false;
     public bool isMoving = false;
 
+    // Audio variables
+    public AudioSource shootingAudioSource;
+    public AudioClip shootingClip;
+
     void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
         player = GameObject.FindWithTag("Player");
-        navMeshAgent.speed = moveSpeed; // Set the initial movement speed
+        navMeshAgent.speed = moveSpeed;
+
+        // Initialize the audio source and clip
+        shootingAudioSource = GetComponent<AudioSource>();
+        shootingAudioSource.clip = shootingClip;
+
         StartCoroutine(WanderCoroutine());
     }
 
@@ -41,24 +50,17 @@ public class HitScanAI : MonoBehaviour
         {
             SmoothLookAt(player.transform.position);
 
-            // Check if not currently shooting
             if (!isShooting)
             {
-                // Set the destination to the player's position
                 navMeshAgent.SetDestination(player.transform.position);
 
-                // Check if the player is within shooting range
                 if (distanceToPlayer < shootingRange)
                 {
-                    // Rotate the enemy smoothly towards the player
-
-                    // Start shooting coroutine
                     StartCoroutine(ShootCoroutine());
                 }
             }
         }
 
-        // Check if the AI is moving at least at a speed of 1
         isMoving = navMeshAgent.velocity.magnitude >= 1f;
     }
 
@@ -66,16 +68,12 @@ public class HitScanAI : MonoBehaviour
     {
         while (!detected)
         {
-            // If not detected, enter wander state
             Vector3 randomPoint = RandomNavSphere(transform.position, wanderRadius, -1);
-
-            // Add a random lateral movement
             Vector3 lateralMovement = new Vector3(Random.Range(-lateralMovementRange, lateralMovementRange), 0f, 0f);
             randomPoint += lateralMovement;
 
             navMeshAgent.SetDestination(randomPoint);
 
-            // Wait for the specified wander time
             yield return new WaitForSeconds(wanderTimerBetweenShots);
         }
     }
@@ -89,38 +87,28 @@ public class HitScanAI : MonoBehaviour
 
     IEnumerator ShootCoroutine()
     {
-        // Set shooting state to true
         isShooting = true;
 
-        // Shoot if the enemy has a clear line of sight
         Shoot();
 
-        // Stop walking while shooting
         navMeshAgent.isStopped = true;
 
-        // Wait for the cooldown
         yield return new WaitForSeconds(shootCooldown);
 
-        // Resume walking and set shooting state to false
         navMeshAgent.isStopped = false;
         isShooting = false;
 
-        // Wander between shots
         StartCoroutine(WanderCoroutine());
     }
 
     void Shoot()
     {
-        // Calculate a random angle adjustment
-        float randomAngle = Random.Range(-shootingAngle, shootingAngle); // Adjust the range as needed
-
-        // Apply the random angle to the forward direction
+        float randomAngle = Random.Range(-shootingAngle, shootingAngle);
         Vector3 shootingDirection = Quaternion.Euler(0f, randomAngle, 0f) * transform.forward;
 
         Ray ray = new Ray(transform.position, shootingDirection);
         RaycastHit hit;
 
-        // Draw the ray in the scene view for visualization
         Debug.DrawRay(ray.origin, ray.direction * shootingRange, Color.red, 0.1f);
 
         if (Physics.Raycast(ray, out hit, shootingRange))
@@ -129,15 +117,16 @@ public class HitScanAI : MonoBehaviour
             {
                 hit.collider.gameObject.GetComponent<Player>().TakeDamage(damage);
                 Debug.Log("Enemy shoots player!");
+
+                // Play shooting audio
+                shootingAudioSource.Play();
             }
         }
     }
 
-    // Helper function to get a random point within a specified radius on the NavMesh
     Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask)
     {
         Vector3 randomDirection = Random.insideUnitSphere * dist;
-
         randomDirection += origin;
 
         NavMeshHit navHit;

@@ -28,7 +28,7 @@ public class SpriteAnimation : MonoBehaviour
         if (angle < 0)
             angle += 360f;
 
-        if (Mathf.Abs(angle) < acceptableAngle || Mathf.Abs(angle - 360f) < acceptableAngle)
+        if (Mathf.Abs(angle) < acceptableAngle || Mathf.Abs(angle - 360f) < acceptableAngle && hs != null)
         {
             if (hs.isShooting)
             {

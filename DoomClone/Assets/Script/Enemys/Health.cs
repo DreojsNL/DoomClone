@@ -1,9 +1,9 @@
 using UnityEngine;
 
-public class PlayerHealth : MonoBehaviour
+public class Health : MonoBehaviour
 {
-    public int maxHealth = 100;
-    private int currentHealth;
+    public int maxHealth = 50;
+    public int currentHealth;
 
     private void Start()
     {
@@ -13,7 +13,6 @@ public class PlayerHealth : MonoBehaviour
     public void TakeDamage(int damageAmount)
     {
         currentHealth -= damageAmount;
-        Debug.Log("Player took " + damageAmount + " damage. Current health: " + currentHealth);
 
         if (currentHealth <= 0)
         {
@@ -23,7 +22,6 @@ public class PlayerHealth : MonoBehaviour
 
     private void Die()
     {
-        Debug.Log("Player died!");
-        // You can add your own logic here for player death, such as game over or respawn.
+       Destroy(gameObject);
     }
 }

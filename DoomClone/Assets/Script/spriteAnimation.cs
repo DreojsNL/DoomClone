@@ -7,17 +7,32 @@ public class SpriteAnimation : MonoBehaviour
 
     private GameObject player;
     private HitScanAI hs;
+    private Bomber bm;
     private bool isWalking;
+    public string shooting;
+    public string front;
+    public string back;
+    public string left;
+    public string right;
 
     void Start()
     {
         hs = GetComponent<HitScanAI>();
+        bm = GetComponent<Bomber>();
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
     void Update()
     {
-        isWalking = hs.isMoving;
+        if (hs != null)
+        {
+            isWalking = hs.isMoving;
+        }
+        else
+        {
+            isWalking = bm.isMoving;
+        }
+       
         if (player == null)
             return;
 
@@ -30,31 +45,79 @@ public class SpriteAnimation : MonoBehaviour
 
         if (Mathf.Abs(angle) < acceptableAngle || Mathf.Abs(angle - 360f) < acceptableAngle && hs != null)
         {
-            if (hs.isShooting)
+            if(hs != null)
             {
-                SetAnimation("JoostShooting");
+                if (hs.isShooting)
+                {
+                    SetAnimation(shooting);
+                }
+                else
+                {
+                    SetAnimation(front);
+                }
             }
             else
             {
-                SetAnimation("JoostFront");
+                if (bm.isExploding)
+                {
+                    SetAnimation(shooting);
+                }
+                else
+                {
+                    SetAnimation(front);
+                }
             }
           
+          
         }
-        else if (Mathf.Abs(angle - 90f) < acceptableAngle)
+        else if (Mathf.Abs(angle - 90f) < acceptableAngle )
         {
-            SetAnimation("JoostRight");
+            if (bm != null && !bm.isExploding)
+            {
+                SetAnimation(right);
+            }else if (hs != null && !hs.isShooting)
+            {
+                SetAnimation(right);
+            }
+            else
+            {
+                SetAnimation(shooting);
+            }
+
         }
         else if (Mathf.Abs(angle - 180f) < acceptableAngle)
         {
-            SetAnimation("Back");
+            if (bm != null && !bm.isExploding)
+            {
+                SetAnimation(back);
+            }
+            else if (hs != null && !hs.isShooting)
+            {
+                SetAnimation(back);
+            }
+            else
+            {
+                SetAnimation(shooting);
+            }
         }
         else if (Mathf.Abs(angle - 270f) < acceptableAngle)
         {
-            SetAnimation("JoostLeft");
+            if (bm != null && !bm.isExploding)
+            {
+                SetAnimation(left);
+            }
+            else if (hs != null && !hs.isShooting)
+            {
+                SetAnimation(left);
+            }
+            else
+            {
+                SetAnimation(shooting);
+            }
         }
     }
 
-    void SetAnimation(string animationName)
+  public  void SetAnimation(string animationName)
     {
         npcAnimator.SetBool("IsMoving", isWalking);
         npcAnimator.Play(animationName);

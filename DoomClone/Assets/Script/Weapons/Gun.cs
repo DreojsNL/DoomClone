@@ -16,7 +16,7 @@ public class Gun : MonoBehaviour
     public GameObject hitPrefab; // Assign your prefab in the inspector
     public float hitPrefabOffset = 0.01f; // Adjust the offset to prevent z-fighting
     public Animator imageAnimation;
-    private bool canShoot = true;
+    public bool canShoot = true;
     private bool isShooting = false; // Added variable
     public AudioSource audioSource;
     private Camera playerCamera;
@@ -38,6 +38,7 @@ public class Gun : MonoBehaviour
 
     void Update()
     {
+        UpdateAmmoText();
         if (Input.GetButtonDown("Fire1") && canShoot)
         {
             if (currentAmmo > 0) // Check if there is ammo before shooting
@@ -147,10 +148,9 @@ public class Gun : MonoBehaviour
     public void AddAmmo(int ammoAmount)
     {
         currentAmmo += ammoAmount;
-        UpdateAmmoText(); // Update the ammo text after adding ammo
     }
 
-    void UpdateAmmoText()
+  public void UpdateAmmoText()
     {
         if (ammoText != null)
         {

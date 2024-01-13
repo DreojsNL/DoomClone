@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Weapons : MonoBehaviour
 {
+    public GameObject pistol;
+    public GameObject shotgun;
     [System.Serializable]
     public class WeaponSet
     {
@@ -37,6 +39,7 @@ public class Weapons : MonoBehaviour
         {
             if (Input.GetKeyDown(i.ToString()))
             {
+                // Pass -1 to switch to the previous weapon
                 ChangeWeapon(i - 1);
             }
         }
@@ -45,7 +48,11 @@ public class Weapons : MonoBehaviour
     // Switches to the next or previous weapon based on the direction parameter
     void ChangeWeapon(int direction)
     {
-        SetActiveWeapon(currentWeaponIndex + direction);
+        shotgun.GetComponent<Gun>().canShoot = true;
+        pistol.GetComponent<Gun>().canShoot = true;
+        // Calculate the new weapon index with wrapping
+        int newIndex = (currentWeaponIndex + direction + weapons.Count) % weapons.Count;
+        SetActiveWeapon(newIndex);
     }
 
     // Sets the active weapon based on the given index

@@ -1,5 +1,7 @@
 using UnityEngine;
 using TMPro;
+using System.Collections.Generic;
+using System.Collections;
 
 public class Player : MonoBehaviour
 {
@@ -11,12 +13,16 @@ public class Player : MonoBehaviour
     private float pitch = 0f;
     public int maxHealth = 100;
     public int currentHealth;
+    private float damageCooldown;
     public bool isMoving;
     public GameObject[] pickUpSounds;
     private Rigidbody rb;
     public TextMeshProUGUI healthText; // Reference to the TextMeshPro component for displaying health
     public Gun shotGun;
-  
+    public Gun pistol;
+    public bool hasKey = false;
+    private Animator doorAnimator;
+
 
 
     private void Start()
@@ -30,6 +36,10 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (damageCooldown > 0)
+        {
+            damageCooldown -= Time.deltaTime;
+        }
         UpdateHealthText();
         // Player movement
         float horizontal = Input.GetAxis("Horizontal");
@@ -62,13 +72,14 @@ public class Player : MonoBehaviour
 
     public void TakeDamage(int damageAmount)
     {
-        currentHealth -= damageAmount;
-        UpdateHealthText(); // Update the health text when the player takes damage
+            currentHealth -= damageAmount;
+            UpdateHealthText(); // Update the health text when the player takes damage
 
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
+            if (currentHealth <= 0)
+            {
+                Die();
+            }
+
     }
     public void AddHealth(int healthAmount)
     {
@@ -92,6 +103,7 @@ public class Player : MonoBehaviour
             // healthText.text = $"Health: {currentHealth:000}";
         }
     }
+   
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("HealthPack") && currentHealth >= 80 && currentHealth < 100)
@@ -136,6 +148,47 @@ public class Player : MonoBehaviour
             Instantiate(pickUpSounds[2], transform.position, Quaternion.identity);
             Destroy(other.gameObject);
             shotGun.AddAmmo(10);
+        }
+        if (other.gameObject.CompareTag("PTAmmo"))
+        {
+            Instantiate(pickUpSounds[2], transform.position, Quaternion.identity);
+            Destroy(other.gameObject);
+            pistol.AddAmmo(10);
+        }
+        if (other.gameObject.CompareTag("Key"))
+        {
+            Instantiate(pickUpSounds[1], transform.position, Quaternion.identity);
+            Destroy(other.gameObject);
+            hasKey = true;
+        }
+
+
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.CompareTag("Poison") && damageCooldown <= 0)
+        {
+            TakeDamage(10);
+            damageCooldown = 1f; // Adjust the cooldown time (1.5f seconds in this example)
+        }
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Door"))
+        {
+            doorAnimator = collision.gameObject.GetComponent<Animator>();
+            // Trigger the door animation
+            doorAnimator.SetTrigger("OpenDoor");
+        }
+        if (collision.gameObject.CompareTag("KeyDoor"))
+        {
+            if(hasKey)
+            {
+                doorAnimator = collision.gameObject.GetComponent<Animator>();
+                // Trigger the door animation
+                doorAnimator.SetTrigger("OpenDoor");
+            }
+            
         }
     }
 }

@@ -21,8 +21,7 @@ public class HitScanAI : MonoBehaviour
     public bool isMoving = false;
 
     // Audio variables
-    public AudioSource shootingAudioSource;
-    public AudioClip shootingClip;
+
 
     void Start()
     {
@@ -31,8 +30,7 @@ public class HitScanAI : MonoBehaviour
         navMeshAgent.speed = moveSpeed;
 
         // Initialize the audio source and clip
-        shootingAudioSource = GetComponent<AudioSource>();
-        shootingAudioSource.clip = shootingClip;
+
 
         StartCoroutine(WanderCoroutine());
     }
@@ -119,7 +117,7 @@ public class HitScanAI : MonoBehaviour
                 Debug.Log("Enemy shoots player!");
 
                 // Play shooting audio
-                shootingAudioSource.Play();
+               
             }
         }
     }

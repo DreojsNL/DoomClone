@@ -4,9 +4,12 @@ public class Health : MonoBehaviour
 {
     public int maxHealth = 50;
     public int currentHealth;
+    public GameObject guts;
+    private Bomber bm;
 
     private void Start()
     {
+        bm = GetComponent<Bomber>();
         currentHealth = maxHealth;
     }
 
@@ -22,6 +25,19 @@ public class Health : MonoBehaviour
 
     private void Die()
     {
-       Destroy(gameObject);
+        if (guts != null)
+        {
+            Instantiate(guts, gameObject.transform.position, Quaternion.identity);
+
+        }
+        if (bm != null)
+        {
+            StartCoroutine(bm.ExplodeCoroutine());
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+       
     }
 }

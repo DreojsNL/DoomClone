@@ -10,6 +10,11 @@ TagManager:
   - ArmourPack
   - ArmourHelmet
   - HealthKit
+  - PTAmmo
+  - Poison
+  - Door
+  - KeyDoor
+  - Key
   layers:
   - Default
   - TransparentFX
